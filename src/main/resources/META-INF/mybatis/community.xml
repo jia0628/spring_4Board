@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="org.iclass.dao.CommunityMapper">
+	 
+ 	<insert id="insert" parameterType="org.iclass.dto.CommunityDTO" useGeneratedKeys="false" >
+ 	<!-- 오라클은 idx를 시퀀스를 이용하여 값을 만듭니다. 
+ 	    useGeneratedKeys="false"  -->
+ 		INSERT INTO community
+ 			(idx,writer,title,content,ip) 
+		VALUES 
+			(community_idx_seq.nextval,
+					#{writer},#{title},	#{content},	#{ip})
+	<!-- insert 후에 증가된 시퀀스값 (insert 된 idx값) 가져오기 
+			: 파라미터 "dto에 idx 필드"(keyProperty="idx")에 저장하기
+		 sql에서 insert 후의 시퀀스의 currval 를 idx프로퍼티에 저장.
+	-->	
+		<selectKey keyProperty="idx" resultType="int" order="AFTER">
+			SELECT community_idx_seq.currval 
+			FROM dual
+		</selectKey>	
+ 	</insert>  
+ 	
+ 	
+ 	<!-- null 허용한 컬럼은 타입을 알려주어 NULL 이 입력되도록 한다. -->
+ 	<!--0. 메인글 수정-->
+ 	<update id="update" parameterType="org.iclass.dto.CommunityDTO">
+	 	UPDATE community
+		SET 
+			title=#{title}, content=#{content} 
+		WHERE 
+			idx=#{idx}
+ 	</update>
+ 	<!--0. 메인글 삭제-->
+ 	<delete id="delete" parameterType="int">
+ 		DELETE FROM 
+ 			community 
+ 		WHERE 
+ 			idx=#{idx}
+ 	</delete>
+ 	<!--1. 글 상세보기-->
+ 	<select id="selectByIdx" parameterType="int" 
+ 			resultType="org.iclass.dto.CommunityDTO">
+ 		SELECT * 
+ 		FROM 
+ 			community 
+ 		WHERE 
+ 			idx=#{idx}   <!-- PK로 조회 -->
+ 	</select>
+ 	
+ 	<!--2. 댓글 목록 : 매퍼 xml 을 따로 만들기 -->
+ 	
+ 	
+ 	<!--3. 메인글 목록 전체 개수 구하기-->
+ 	<select id="getCount" resultType="int">
+ 		SELECT count(*) FROM community
+ 	</select>
+ 	
+ 	<!--4. 댓글 갯수 구하기-->
+ 	<select id="getCommentCount" resultType="int" parameterType="int">
+ 		SELECT count(*) 
+ 		FROM communityComments
+ 		where mref=#{mref}
+ 	</select>
+ 	
+    <!--#5:메인글 조회수-->
+   <update id="setReadCount" parameterType="int">
+      update community set readCount = readCount + 1 where idx = #{idx}
+   </update>
+   
+   <!--#6:댓글 개수 // 쿼리 수정이 필요 => 댓글 삭제 시 빼야함(별도 쿼리로 작성하기로)-->
+   <update id="setCommentCount" parameterType="int">
+      update community set commentCount = commentCount + 1 where idx = #{idx}
+   </update>
+
+   <!--#7: 페이지 별 글목록 20개씩 조회-->
+   <select id="getList" parameterType="org.iclass.dto.PageReqDTO" resultType="org.iclass.dto.CommunityDTO">
+      select * from
+          (select rownum rnum, temp.* from
+              (select * from community order by idx desc) temp)
+      where rnum between #{startNo} and #{endNo}
+   </select>
+ 	
+ </mapper>
+ 
+ 
+ 
+ 
+ 
+ 
