@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	1. 이 파일은 bean 설정 파일입니다. 어떤 라이브러리의 클래스들을 bean으로 만들어야 할때 사용합니다.
+	bean 태그로 정의한것이 1개의 싱글톤 bean으로 만들어 집니다. 
+	beans 태그 안에 xmlns 속성은 태그 사용을 위해 필요한 url 입니다.
+	웹 애플리케이션 프로젝트에서는 root-context.xml 에 ApplicationContext(spring-context) 가 생성해야 할 bean을 정의합니다.
+	이 파일은 web.xml에서 contextConfigLocation 파라미터로 지정됩니다.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!--1. @Component 찾을 패키지 위치 -->
+	<context:component-scan base-package="org.iclass"/> 
+	
+
+	
+</beans>

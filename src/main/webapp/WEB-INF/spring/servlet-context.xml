@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- servlet-context.xml 은 webmvc의 프론트 컨트롤러인 DispatcherServlet 의 동작에 필요한 bean을 생성합니다. -->
+	<!-- spring MVC 는 애노테이션 방식으로 동작시키며 자동으로 bean으로 생성된다. -->
+	<annotation-driven />
+
+	<!--  webapp/resources 디렉토리(location프로퍼티)의 정적인 자원들 css, js, 이미지등의 
+		GET요청을 처리하는 url은  /resources 로 시작하도록 정의한다. (mapping 프로퍼티)
+		 spring MVC 에서 처리하지 않는 리소스 입니다.
+	-->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- InternalResourceViewResolver 는 bean 이 생성되어 
+	@Controller 의 handler 메소드 처리후 view 파일을 결정하는 방식을 설정한다. -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" /> <!-- 앞에 붙는 문자열 -->
+		<beans:property name="suffix" value=".jsp" /> <!-- 뒤에 붙는 문자열 -->
+	</beans:bean>
+	
+	<!-- bean 생성 스캔할 패키지 정하기 : 실제 실행을 위해서는 여기에 필요-->
+	<context:component-scan base-package="org.iclass" />
+</beans:beans>
